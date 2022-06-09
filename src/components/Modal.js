@@ -63,22 +63,53 @@ const CloseModalButton = styled(MdClose)`
 `;
 
 const Modal = ({ showModal, setShowModal }) => {
+  const modalRef = useRef();
+
+  const animation = useSpring({
+    config: {
+      duration: 250,
+    },
+    opacity: showModal ? 1 : 0,
+    transform: showModal ? `translateY(0%)` : `translateY(-100%)`,
+  });
+
+  const closeModal = (e) => {
+    if (modalRef.current === e.target) {
+      setShowModal(false);
+    }
+  };
+
+  //   const keyPress = useCallback(
+  //     (e) => {
+  //       if (e.key === "Escape" && showModal) {
+  //         setShowModal(false);
+  //       }
+  //     },
+  //     [setShowModal, showModal]
+  //   );
+
+  //   useEffect(() => {
+  //     document.addEventListener("keydown", keyPress);
+  //     return () => document.removeEventListener("keydown", keyPress);
+  //   }, [keyPress]);
   return (
     <>
       {showModal ? (
-        <Background>
-          <ModalWrapper showModal={showModal}>
-            <ModalImg src={require("./modal.jpeg")} alt="camera" />
-            <ModalContent>
-              <h1>Are you ready!!!</h1>
-              <p>Get exclusive access to our next podcast</p>
-              <button>Join Now</button>
-              <CloseModalButton
-                aria-label="Clode Modal"
-                onClick={() => setShowModal((prev) => !prev)}
-              />
-            </ModalContent>
-          </ModalWrapper>
+        <Background ref={modalRef} onClick={closeModal}>
+          <animated.div style={animation}>
+            <ModalWrapper showModal={showModal}>
+              <ModalImg src={require("./modal.jpeg")} alt="camera" />
+              <ModalContent>
+                <h1>Are you ready!!!</h1>
+                <p>Get exclusive access to our next podcast</p>
+                <button>Join Now</button>
+                <CloseModalButton
+                  aria-label="Clode Modal"
+                  onClick={() => setShowModal((prev) => !prev)}
+                />
+              </ModalContent>
+            </ModalWrapper>
+          </animated.div>
         </Background>
       ) : null}
     </>
